@@ -53,11 +53,12 @@ void viewLoans(struct Person *person);
 void searchBooks();
 void upper(char s[]);
 int verify_login(char s[]);
+int verify_person(struct Person *person);
 
 //main function
 int main(int argc, char *argv[]) {
     
-    if (verify_login(argv[1])==1){
+    if (verify_login(argv[1])==1 && argc == 4){
         upper(argv[2]);
         upper(argv[3]);
         readFromFile_PEOPLE();
@@ -67,54 +68,60 @@ int main(int argc, char *argv[]) {
 
         login(&currentUser);
 
+        if (verify_person(&currentUser) == 1){
+            readFromFile_BOOKS();
+            readFromFile_LOANS();
+            int choice;
+            do {
+                printf("\nLibrary Management System\n");
+                printf("1. Borrow Books\n");
+                printf("2. Return / Donate Books\n");
+                printf("3. View Loans\n");
+                printf("4. Search for Books\n");
+                printf("5. Exit\n");
+                printf("Enter your choice: ");
+                scanf("%d", &choice);
 
-        readFromFile_BOOKS();
-        readFromFile_LOANS();
-        int choice;
-        do {
-            printf("\nLibrary Management System\n");
-            printf("1. Borrow Books\n");
-            printf("2. Return / Donate Books\n");
-            printf("3. View Loans\n");
-            printf("4. Search for Books\n");
-            printf("5. Exit\n");
-            printf("Enter your choice: ");
-            scanf("%d", &choice);
+                switch (choice) {
+                    case 1:
+                        borrowBooks(&currentUser);
+                        break;
+                    case 2:
+                        printf("Do you want to donate or return books?:\n");
+                        printf("1.Donate Books\n");
+                        printf("2.Return Books\n");
+                        printf("Enter you choice:");
+                        int choose;
+                        scanf("%d",&choose);
+                        if (choose == 1){
+                            donateBooks();
+                        }else{
+                            returnBooks(&currentUser);
 
-            switch (choice) {
-                case 1:
-                    borrowBooks(&currentUser);
-                    break;
-                case 2:
-                    printf("Do you want to donate or return books?:\n");
-                    printf("1.Donate Books\n");
-                    printf("2.Return Books\n");
-                    printf("Enter you choice:");
-                    int choose;
-                    scanf("%d",&choose);
-                    if (choose == 1){
-                        donateBooks();
-                    }else{
-                        returnBooks(&currentUser);
+                        }
+                        break;
+                    case 3:
+                        viewLoans(&currentUser);
+                        break;
+                    case 4:
+                        searchBooks();
+                        break;
+                    case 5:
+                        writeToFile_LOANS();
+                        writeToFile_BOOKS();
+                        writeToFile_PEOPLE();
+                        printf("Exiting the program.\n");
+                        break;
+                    default:
+                        printf("Invalid choice! Please try again.\n");
+                }
+            } while (choice != 5);
 
-                    }
-                    break;
-                case 3:
-                    viewLoans(&currentUser);
-                    break;
-                case 4:
-                    searchBooks();
-                    break;
-                case 5:
-                    writeToFile_LOANS();
-                    writeToFile_BOOKS();
-                    writeToFile_PEOPLE();
-                    printf("Exiting the program.\n");
-                    break;
-                default:
-                    printf("Invalid choice! Please try again.\n");
-            }
-        } while (choice != 5);
+        }else{
+            writeToFile_PEOPLE();
+
+        }
+         
 
     }else{
         printf("You made a mistake while trying to login. You should have introduced the following: login [NAME] [SURNAME].");
@@ -130,7 +137,14 @@ int verify_login(char s[]){
     return 0;
 }
 
-
+int verify_person(struct Person *person){
+    for (int i = 0; i < numPeople; i++){
+        if (strcmp(people[i].name,person->name)== 0 && strcmp(people[i].surname,person->surname) == 0){
+            return 1;
+        }
+    }
+    return 0;
+}
 void upper(char s[]){
     for (int i = 0; i < strlen(s); i++){
         if (s[i] >= 'a' && s[i] <='z'){
@@ -228,7 +242,12 @@ void writeToFile_PEOPLE() {
 
 // Function to simulate login
 void login(struct Person *person) {
-    printf("Logged in as %s %s.\n", person->name, person->surname);
+    if (verify_person(person)== 1){
+        printf("Logged in as %s %s.\n", person->name, person->surname);
+
+    }else{
+        printf("This account does not exist. In order to login, you have to have an existing account.");
+    }
      
 }
 
