@@ -88,9 +88,9 @@ int main(int argc, char *argv[]) {
                         break;
                     case 2:
                         printf("Do you want to donate or return books?:\n");
-                        printf("1.Donate Books\n");
-                        printf("2.Return Books\n");
-                        printf("Enter you choice:");
+                        printf("  1.Donate Books\n");
+                        printf("  2.Return Books\n");
+                        printf("  Enter you choice:");
                         int choose;
                         scanf("%d",&choose);
                         if (choose == 1){
@@ -290,6 +290,7 @@ void borrowBooks(struct Person *person) {
         }
     }
     if (indexLoan != -1){
+        //Checks if the user already has copies of the book
         loans[indexLoan].copiesBorrowed = loans[indexLoan].copiesBorrowed + copies;
 
     }else{
@@ -424,9 +425,9 @@ void viewLoans(struct Person *person) {
 // Function to search for books
 void searchBooks() {
     printf("Choose the method to search the books:\n");
-    printf("1. Title or Author\n");
-    printf("2. Title and Author\n");
-    printf("Enter your choice:");
+    printf("  1. Title or Author\n");
+    printf("  2. Title and Author\n");
+    printf("  Enter your choice:");
     int choose;
     scanf("%d",&choose);
 
